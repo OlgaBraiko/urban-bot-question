@@ -39,9 +39,52 @@ function Logo() {
     );
 }
 
+export const BotQuestion = () => {
+    return (
+        <Dialog onFinish={(answers) => console.log(answers)}>
+            <DialogStep content={<Text>Привет! </Text>} id="go" onNext={(hello) => console.log(hello)}>
+                <DialogStep
+                    content={
+                        <ButtonGroup title="Какая страна считается родиной волейбола?">
+                            <Button> Америка</Button>
+                            <Button>Бразилия</Button>
+                            <Button>Франция</Button>
+                        </ButtonGroup>
+                    }
+                    id="country"
+                >
+                    <DialogStep
+                        content={
+                            <ButtonGroup title="Какой максимальный номер разрешено иметь игроку в волейболе?">
+                                <Button>24</Button>
+                                <Button>36</Button>
+                                <Button>98</Button>
+                            </ButtonGroup>
+                        }
+                        id="num"
+                    >
+                        <DialogStep
+                            content={
+                                <ButtonGroup title=" Ещё один вопрос про волейбол">
+                                    <Button>вариант 1</Button>
+                                    <Button>вариант 2</Button>
+                                    <Button>вариант 3</Button>
+                                </ButtonGroup>
+                            }
+                            id="qu"
+                        />
+                    </DialogStep>
+                </DialogStep>
+            </DialogStep>
+        </Dialog>
+    );
+};
+
 export function App() {
     return (
         <>
+            <BotQuestion />
+
             <Router>
                 <Route path="/echo">
                     <Echo />
