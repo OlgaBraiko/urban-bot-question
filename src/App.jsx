@@ -85,62 +85,82 @@ const questions = [
     },
 ];
 
-export const BotQuestion = () => {
+export const BotQuestion = ({ correctCount, handleAnswerCount }) => {
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const currentQuestion = questions[currentQuestionIndex];
+
+    const nextQuestion = () => {
+        if (currentQuestionIndex < questions.length - 1) {
+            setCurrentQuestionIndex(currentQuestionIndex + 1);
+        } else {
+            console.log('Вы ответили на все вопросы!');
+        }
+    };
+
+    const handleAnswer = (selectedAnswer) => {
+        console.log('Выбран ответ:', selectedAnswer);
+
+        nextQuestion();
+    };
+
+    const renderDialogStep = (questionIndex) => {
+        const question = questions[questionIndex];
+        if (!question) {
+            return <DialogStep content={<Text>Вопросы закончились.</Text>} />;
+        }
+
+        return (
+            <DialogStep
+                content={
+                    <ButtonGroup title={question.question}>
+                        {question.answers.map((answer, index) => (
+                            <Button key={index} onClick={() => handleAnswer(answer)}>
+                                {answer.answer}
+                            </Button>
+                        ))}
+                    </ButtonGroup>
+                }
+            >
+                {renderDialogStep(questionIndex + 1)} {/* Рекурсивный вызов для следующего вопроса */}
+            </DialogStep>
+        );
+    };
+
     return (
         <Dialog onFinish={(answers) => console.log(answers)}>
-            <DialogStep content={<Text>Привет! </Text>} id="go" onNext={(hello) => console.log(hello)}>
-                <DialogStep
-                    content={
-                        <ButtonGroup title="Какая страна считается родиной волейбола?">
-                            <Button> Америка</Button>
-                            <Button>Бразилия</Button>
-                            <Button>Франция</Button>
-                        </ButtonGroup>
-                    }
-                    id="country"
-                >
-                    <DialogStep
-                        content={
-                            <ButtonGroup title="Какой максимальный номер разрешено иметь игроку в волейболе?">
-                                <Button>24</Button>
-                                <Button>36</Button>
-                                <Button>98</Button>
-                            </ButtonGroup>
-                        }
-                        id="num"
-                    >
-                        <DialogStep
-                            content={
-                                <ButtonGroup title=" Ещё один вопрос про волейбол">
-                                    <Button>вариант 1</Button>
-                                    <Button>вариант 2</Button>
-                                    <Button>вариант 3</Button>
-                                </ButtonGroup>
-                            }
-                            id="qu"
-                        >
-                            <DialogStep
-                                content={
-                                    <ButtonGroup title=" И ещё один  ">
-                                        <Button>вариант 1</Button>
-                                        <Button>вариант 2</Button>
-                                        <Button>вариант 3</Button>
-                                    </ButtonGroup>
-                                }
-                                id="4"
-                            ></DialogStep>
-                        </DialogStep>
-                    </DialogStep>
-                </DialogStep>
+            <DialogStep content={<Text>Привет! </Text>} id="go">
+                {renderDialogStep(currentQuestionIndex)}
             </DialogStep>
         </Dialog>
     );
 };
 
 export function App() {
+    const [correctCount, setCorrectCount] = useState(0);
+
+    const handleAnswerCount = () => {
+        if (correctCount) {
+            setCorrectCount + 1;
+        }
+        return (
+            <Dialog>
+                <DialogStep
+                    content={
+                        <ButtonGroup>
+                            <Text>
+                                Вы отгадали {correctCount} ответа из {questions.length}
+                            </Text>
+                            <Button>Попробовать снова</Button>
+                        </ButtonGroup>
+                    }
+                ></DialogStep>
+            </Dialog>
+        );
+    };
+
     return (
         <>
-            <BotQuestion />
+            <BotQuestion correctCount={correctCount} handleAnswerCount={handleAnswerCount} />
 
             <Router>
                 <Route path="/echo">
