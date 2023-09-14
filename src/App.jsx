@@ -87,26 +87,40 @@ const questions = [
 
 export const BotQuestion = ({ correctCount, setCorrectCount }) => {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-
     const currentQuestion = questions[currentQuestionIndex];
 
+    // Добавьте обработчик для перехода к следующему вопросу
     const nextQuestion = () => {
         if (currentQuestionIndex < questions.length - 1) {
             setCurrentQuestionIndex(currentQuestionIndex + 1);
         } else {
+            // Вы можете обработать завершение вопросов здесь
             console.log('Вы ответили на все вопросы!');
         }
     };
-    const handleAnswerCount = () => {
+
+    // Обработчик выбора ответа
+    // const handleAnswer = (selectedAnswer) => {
+    //     // TODO: Обработка выбранного ответа, например, сохранение результатов
+    //     console.log('Выбран ответ:', selectedAnswer);
+
+    //     // Переход к следующему вопросу
+    //     nextQuestion();
+    // };
+
+    const handleAnswer = (selectedAnswer) => {
         if (correctCount) {
             setCorrectCount + 1;
         }
+        console.log('Выбран ответ:', selectedAnswer);
         nextQuestion();
     };
 
+    // Рекурсивная функция для генерации компонентов на основе массива questions
     const renderDialogStep = (questionIndex) => {
         const question = questions[questionIndex];
         if (!question) {
+            // Если вопросы закончились, отобразить сообщение о завершении
             return (
                 <DialogStep
                     content={
@@ -114,7 +128,7 @@ export const BotQuestion = ({ correctCount, setCorrectCount }) => {
                             <Text>Вопросы закончились.</Text>
 
                             <Text>
-                                Вы ответили на {correct} из {questions.length}
+                                Вы ответили на {correctCount} из {questions.length}
                             </Text>
                         </>
                     }
@@ -127,11 +141,9 @@ export const BotQuestion = ({ correctCount, setCorrectCount }) => {
                 content={
                     <ButtonGroup title={question.question}>
                         {question.answers.map((answer, index) => (
-                            <>
-                                <Button key={index} onClick={() => handleAnswerCount(answer.correct)}>
-                                    {answer.answer}
-                                </Button>
-                            </>
+                            <Button key={index} onClick={() => handleAnswer(answer.correct)}>
+                                {answer.answer}
+                            </Button>
                         ))}
                     </ButtonGroup>
                 }
