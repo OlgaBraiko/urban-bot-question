@@ -85,8 +85,9 @@ const questions = [
     },
 ];
 
-export const BotQuestion = ({ correctCount, handleAnswerCount }) => {
+export const BotQuestion = ({ correctCount, setCorrectCount }) => {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+
     const currentQuestion = questions[currentQuestionIndex];
 
     const nextQuestion = () => {
@@ -96,17 +97,29 @@ export const BotQuestion = ({ correctCount, handleAnswerCount }) => {
             console.log('Вы ответили на все вопросы!');
         }
     };
-
-    const handleAnswer = (selectedAnswer) => {
-        console.log('Выбран ответ:', selectedAnswer);
-
+    const handleAnswerCount = () => {
+        if (correctCount) {
+            setCorrectCount + 1;
+        }
         nextQuestion();
     };
 
     const renderDialogStep = (questionIndex) => {
         const question = questions[questionIndex];
         if (!question) {
-            return <DialogStep content={<Text>Вопросы закончились.</Text>} />;
+            return (
+                <DialogStep
+                    content={
+                        <>
+                            <Text>Вопросы закончились.</Text>
+
+                            <Text>
+                                Вы ответили на {correct} из {questions.length}
+                            </Text>
+                        </>
+                    }
+                />
+            );
         }
 
         return (
@@ -114,9 +127,11 @@ export const BotQuestion = ({ correctCount, handleAnswerCount }) => {
                 content={
                     <ButtonGroup title={question.question}>
                         {question.answers.map((answer, index) => (
-                            <Button key={index} onClick={() => handleAnswer(answer)}>
-                                {answer.answer}
-                            </Button>
+                            <>
+                                <Button key={index} onClick={() => handleAnswerCount(answer.correct)}>
+                                    {answer.answer}
+                                </Button>
+                            </>
                         ))}
                     </ButtonGroup>
                 }
@@ -138,29 +153,9 @@ export const BotQuestion = ({ correctCount, handleAnswerCount }) => {
 export function App() {
     const [correctCount, setCorrectCount] = useState(0);
 
-    const handleAnswerCount = () => {
-        if (correctCount) {
-            setCorrectCount + 1;
-        }
-        return (
-            <Dialog>
-                <DialogStep
-                    content={
-                        <ButtonGroup>
-                            <Text>
-                                Вы отгадали {correctCount} ответа из {questions.length}
-                            </Text>
-                            <Button>Попробовать снова</Button>
-                        </ButtonGroup>
-                    }
-                ></DialogStep>
-            </Dialog>
-        );
-    };
-
     return (
         <>
-            <BotQuestion correctCount={correctCount} handleAnswerCount={handleAnswerCount} />
+            <BotQuestion correctCount={correctCount} setCorrectCount={setCorrectCount} />
 
             <Router>
                 <Route path="/echo">
