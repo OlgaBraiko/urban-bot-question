@@ -85,7 +85,8 @@ const questions = [
     },
 ];
 
-export const BotQuestion = ({ correctCount, setCorrectCount }) => {
+export const BotQuestion = () => {
+    const [correctCount, setCorrectCount] = useState(0);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const currentQuestion = questions[currentQuestionIndex];
 
@@ -108,9 +109,9 @@ export const BotQuestion = ({ correctCount, setCorrectCount }) => {
     //     nextQuestion();
     // };
 
-    const handleAnswer = (selectedAnswer) => {
-        if (correctCount) {
-            setCorrectCount + 1;
+    const handleAnswer = (correct, selectedAnswer) => {
+        if (correct) {
+            return setCorrectCount + 1;
         }
         console.log('Выбран ответ:', selectedAnswer);
         nextQuestion();
@@ -163,11 +164,9 @@ export const BotQuestion = ({ correctCount, setCorrectCount }) => {
 };
 
 export function App() {
-    const [correctCount, setCorrectCount] = useState(0);
-
     return (
         <>
-            <BotQuestion correctCount={correctCount} setCorrectCount={setCorrectCount} />
+            <BotQuestion />
 
             <Router>
                 <Route path="/echo">
