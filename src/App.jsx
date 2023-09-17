@@ -111,7 +111,7 @@ export const BotQuestion = () => {
 
     const handleAnswer = (correct, selectedAnswer) => {
         if (correct) {
-            return setCorrectCount + 1;
+            setCorrectCount(correctCount + 1);
         }
         console.log('Выбран ответ:', selectedAnswer);
         nextQuestion();
