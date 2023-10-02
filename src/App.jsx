@@ -111,7 +111,7 @@ export const BotQuestion = () => {
 
     const handleAnswer = (correct, selectedAnswer) => {
         if (correct) {
-            setCorrectCount(correctCount + 1);
+            setCorrectCount((correctCount) => correctCount + 1);
         }
         console.log('Выбран ответ:', selectedAnswer);
         nextQuestion();
@@ -142,7 +142,7 @@ export const BotQuestion = () => {
                 content={
                     <ButtonGroup title={question.question}>
                         {question.answers.map((answer, index) => (
-                            <Button key={index} onClick={() => handleAnswer(answer.correct)}>
+                            <Button key={index} onClick={() => handleAnswer(answer.correct, currentQuestion)}>
                                 {answer.answer}
                             </Button>
                         ))}
